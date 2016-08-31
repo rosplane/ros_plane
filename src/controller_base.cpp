@@ -140,11 +140,13 @@ void controller_base::actuator_controls_publish(const ros::TimerEvent&)
 
         fcu_common::Command actuators;
         /* publish actuator controls */
+        actuators.ignore = actuators.IGNORE_NONE;
+        actuators.mode = actuators.MODE_PASS_THROUGH;
 
-        actuators.normalized_roll = output.delta_a;//(isfinite(output.delta_a)) ? output.delta_a : 0.0f;
-        actuators.normalized_pitch = output.delta_e;//(isfinite(output.delta_e)) ? output.delta_e : 0.0f;
-        actuators.normalized_yaw = output.delta_r;//(isfinite(output.delta_r)) ? output.delta_r : 0.0f;
-        actuators.normalized_throttle = output.delta_t;//(isfinite(output.delta_t)) ? output.delta_t : 0.0f;
+        actuators.x = output.delta_a;//(isfinite(output.delta_a)) ? output.delta_a : 0.0f;
+        actuators.y = output.delta_e;//(isfinite(output.delta_e)) ? output.delta_e : 0.0f;
+        actuators.z = output.delta_r;//(isfinite(output.delta_r)) ? output.delta_r : 0.0f;
+        actuators.F = output.delta_t;//(isfinite(output.delta_t)) ? output.delta_t : 0.0f;
 
         _actuators_pub.publish(actuators);
 
