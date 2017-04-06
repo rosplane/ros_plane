@@ -18,7 +18,12 @@ controller_example::controller_example() : controller_base()
 void controller_example::control(const params_s &params, const input_s &input, output_s &output)
 {
     output.delta_r = 0; //cooridinated_turn_hold(input.beta, params, input.Ts)
-    output.phi_c = course_hold(input.chi_c, input.chi, input.r, params, input.Ts);
+    if(input.phi_valid) { // If we are commanding phi directly, use that value
+      output.phi_c = input.phi_c;
+    }
+    else { // Otherwise, use chi_c to compute phi_c
+      output.phi_c = course_hold(input.chi_c, input.chi, input.r, params, input.Ts);
+    }
     output.delta_a = roll_hold(output.phi_c, input.phi, input.p, params, input.Ts);
 
     switch(current_zone) {

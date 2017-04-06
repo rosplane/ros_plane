@@ -48,6 +48,8 @@ protected:
         float Va_c;             /** commanded airspeed (m/s) */
         float h_c;              /** commanded altitude (m) */
         float chi_c;            /** commanded course (rad) */
+        float phi_c;            /** commanded roll angle (rad) */
+        bool phi_valid;         /** determines if phi_c or chi_c is used */
     };
 
     struct output_s{

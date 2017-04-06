@@ -4,5 +4,7 @@
 float32 Va_c		# Commanded airspeed (m/s)
 float32 h_c		# Commanded altitude (m)
 float32 chi_c		# Commanded course (rad)
+float32 phi_c   # Optional command to supersede chi (rad)
+bool phi_valid  # if true, phi_c is used; if false, chi_c is used
 float32[4] aux		# Optional auxiliary commands
 bool aux_valid		# Auxiliary commands valid
