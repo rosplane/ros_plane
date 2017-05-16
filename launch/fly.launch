@@ -1,0 +1,44 @@
+<launch>
+
+<!-- <rosparam subst_value="True">
+  naze:           { imu_pub_rate: 100.0,
+                    rc_send_rate: 50.0,
+                    timeout: 20 }
+
+ </rosparam>  
+-->
+<!-- <rosparam command="load" file="$(find fcu_io)/param/rc.yaml"/>-->
+ 
+ <node name="naze"  pkg="fcu_io"  type="fcu_io_node" output="screen">
+        <param name="port" value="/dev/naze"/>
+	<remap from="/extended_command" to="/command"/>
+ </node>
+ 
+
+ <node name="estimator" pkg="ros_plane" type="ros_plane_estimator" output="screen">
+ 	<remap from="/baro/data" to="/baro"/>
+	<remap from="/airspeed/data" to="/airspeed"/>
+ </node>
+ 
+ <rosparam command="load" file="$(find ros_plane)/param/bixler.yaml" ns="controller"/>
+ <node name="controller" pkg="ros_plane" type="ros_plane_controller">
+    <param name="PWM_RAD_E" value="2.8"/>
+	<param name="PWM_RAD_A" value="-1.6"/>
+	<param name="PWM_RAD_R" value="1.8"/>
+ </node>
+
+ <node name="path_follower" pkg="ros_plane" type="ros_plane_path_follower"/>
+
+ <node name="record" pkg="rosbag" type="record" args="--all -o $(arg name)" output="screen"/>
+ <!-- GPS -->
+
+ <node name="gps_driver" pkg="fcu_common" type="gps">
+	<param name="port" value="/dev/ttyUSB0"/>
+	<param name="baud" value="115200"/>
+ </node>
+ <node name="current_path_publisher" pkg="rostopic" type="rostopic"
+    args="pub /current_path ros_plane/Current_Path 'true' '10'  '[0.0, -50.0, -40.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> 
+
+<!--<node name="current_path_publisher" pkg="rostopic" type="rostopic"
+    args="pub /current_path ros_plane/Current_Path 'false' '10'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[-50.0, -50.0, -40.0]'  '30.0' '1' '-r 5'"/> -->
+</launch>

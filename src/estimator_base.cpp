@@ -106,7 +106,10 @@ void estimator_base::baroAltCallback(const fcu_common::Barometer &msg)
 
 void estimator_base::airspeedCallback(const fcu_common::Airspeed &msg)
 {
-    input_.diff_pres = msg.differential_pressure;
+    if (msg.differential_pressure > 0.0)
+    {
+      input_.diff_pres = msg.differential_pressure;
+    }
 }
 
 } //end namespace
