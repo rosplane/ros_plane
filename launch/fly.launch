@@ -11,16 +11,16 @@
  
  <node name="naze"  pkg="fcu_io"  type="fcu_io_node" output="screen">
         <param name="port" value="/dev/naze"/>
-	<remap from="/extended_command" to="/command"/>
+ <!-- <remap from="/extended_command" to="/command"/> -->
  </node>
  
 
  <node name="estimator" pkg="ros_plane" type="ros_plane_estimator" output="screen">
- 	<remap from="/baro/data" to="/baro"/>
-	<remap from="/airspeed/data" to="/airspeed"/>
+ 	<!-- <remap from="/baro/data" to="/baro"/>
+	<remap from="/airspeed/data" to="/airspeed"/> -->
  </node>
  
- <rosparam command="load" file="$(find ros_plane)/param/bixler.yaml" ns="controller"/>
+ <rosparam command="load" file="$(find ros_plane)/param/myTwinDream.yaml" ns="controller"/>
  <node name="controller" pkg="ros_plane" type="ros_plane_controller">
     <param name="PWM_RAD_E" value="2.8"/>
 	<param name="PWM_RAD_A" value="-1.6"/>
@@ -33,11 +33,11 @@
  <!-- GPS -->
 
  <node name="gps_driver" pkg="fcu_common" type="gps">
-	<param name="port" value="/dev/ttyUSB0"/>
+	<param name="port" value="/dev/gps"/>
 	<param name="baud" value="115200"/>
  </node>
  <node name="current_path_publisher" pkg="rostopic" type="rostopic"
-    args="pub /current_path ros_plane/Current_Path 'true' '10'  '[0.0, -50.0, -40.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> 
+    args="pub /current_path ros_plane/Current_Path 'true' '15'  '[0.0, -50.0, -50.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> 
 
 <!--<node name="current_path_publisher" pkg="rostopic" type="rostopic"
     args="pub /current_path ros_plane/Current_Path 'false' '10'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[-50.0, -50.0, -40.0]'  '30.0' '1' '-r 5'"/> -->
