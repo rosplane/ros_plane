@@ -27,7 +27,7 @@ estimator_base::estimator_base():
     airspeed_sub_ = nh_.subscribe(airspeed_topic_, 10, &estimator_base::airspeedCallback, this);
     update_timer_ = nh_.createTimer(ros::Duration(1.0/update_rate_), &estimator_base::update, this);
     vehicle_state_pub_ = nh_.advertise<fcu_common::State>("state",10);
-    gps_state_pub_ = nh_.advertise<fcu_common::State>("state",10);
+    gps_state_pub_ = nh_.advertise<fcu_common::State>("gps_state",10);
     gps_init_pub_ = nh_.advertise<std_msgs::Float32MultiArray>("gps_init",10);
 }
 
@@ -65,11 +65,11 @@ void estimator_base::update(const ros::TimerEvent&)
 
     if (gps_init_)
 	{
-	    msg.position[0] = init_lat_ + (output.pn*180.0)/(M_PI*EARTH_RADIUS);
-	    msg.position[1] = init_lon_ + (output.pe*180.0)/(EARTH_RADIUS*M_PI*cos(init_lat_*M_PI/180.0));
-	    msg.position[2] = init_alt_ + output.h;
+	   msg.position[0] = init_lat_ + (output.pn*180.0)/(M_PI*EARTH_RADIUS);
+	   msg.position[1] = init_lon_ + (output.pe*180.0)/(EARTH_RADIUS*M_PI*cos(init_lat_*M_PI/180.0));
+	   msg.position[2] = init_alt_ + output.h;
 
-	    gps_state_pub_.publish(msg);
+	   gps_state_pub_.publish(msg);
 	}
 }
 
@@ -97,12 +97,15 @@ void estimator_base::gpsCallback(const fcu_common::GPS &msg)
             input_.gps_course = msg.ground_course;
         input_.gps_new = true;
 
-        std_msgs::Float32MultiArray msg;
-        msg.data[0] = init_lat_;
-        msg.data[1] = init_lon_;
-        msg.data[2] = init_alt_;
+       std_msgs::Float32MultiArray msg;
+       msg.data.clear();
+       msg.data.push_back(init_lat_);
+       msg.data.push_back(init_lon_);
+       msg.data.push_back(init_alt_);
+       // msg.data[1] = init_lon_;
+       // msg.data[2] = init_alt_;
 
-        gps_init_pub_.publish(msg);
+       gps_init_pub_.publish(msg);
     }
 }
 
