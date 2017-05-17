@@ -18,6 +18,7 @@ add_message_files(
   Current_Path.msg
   Waypoint.msg
   Controller_Internals.msg
+  Dubin.msg
 )
 
 generate_messages(

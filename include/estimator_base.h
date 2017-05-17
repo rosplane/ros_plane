@@ -15,6 +15,7 @@
 #include <sensor_msgs/Imu.h>
 #include <fcu_common/Barometer.h>
 #include <fcu_common/Airspeed.h>
+#include <std_msgs/Float32MultiArray.h>
 #include <math.h>
 #include <Eigen/Eigen>
 
@@ -83,6 +84,8 @@ private:
     ros::NodeHandle nh_;
     ros::NodeHandle nh_private_;
     ros::Publisher vehicle_state_pub_;
+    ros::Publisher gps_state_pub_;
+    ros::Publisher gps_init_pub_;
     ros::Subscriber gps_sub_;
     ros::Subscriber imu_sub_;
     ros::Subscriber baro_sub_;
