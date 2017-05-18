@@ -48,7 +48,7 @@ controller_base::controller_base():
     nh_private_.param<double>("MAX_E", _params.max_e, 0.610);
     nh_private_.param<double>("MAX_A", _params.max_a, 0.523);
     nh_private_.param<double>("MAX_R", _params.max_r, 0.523);
-    nh_private_.param<double>("MAX_T", _params.max_t, 1.0);
+    nh_private_.param<double>("MAX_T", _params.max_t, 0.7);
 
     _func = boost::bind(&controller_base::reconfigure_callback, this, _1, _2);
     _server.setCallback(_func);

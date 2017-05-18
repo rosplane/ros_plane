@@ -90,7 +90,7 @@ void estimator_example::estimate(const params_s &params, const input_s &input, o
     lpf_diff = alpha1*lpf_diff + (1-alpha1)*input.diff_pres;
     float Vahat = sqrt(2/params.rho*lpf_diff);
     if(!std::isfinite(Vahat))
-        Vahat = sqrt(2/params.rho*input.diff_pres);
+        Vahat = 1;//sqrt(2/params.rho*input.diff_pres);
 
     // low pass filter accelerometers
     lpf_accel_x = alpha*lpf_accel_x + (1-alpha)*input.accel_x;

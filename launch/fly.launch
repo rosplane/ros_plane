@@ -33,12 +33,12 @@
  <!-- GPS -->
 
  <node name="gps_driver" pkg="fcu_common" type="gps">
-	<param name="port" value="/dev/gps"/>
+	<param name="port" value="/dev/m8"/>
 	<param name="baud" value="115200"/>
  </node>
- <node name="current_path_publisher" pkg="rostopic" type="rostopic"
-    args="pub /current_path ros_plane/Current_Path 'true' '15'  '[0.0, -50.0, -50.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> 
+ <!-- <node name="current_path_publisher" pkg="rostopic" type="rostopic"
+    args="pub /current_path ros_plane/Current_Path 'true' '15'  '[30.0, 0.0, -50.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> -->
 
-<!--<node name="current_path_publisher" pkg="rostopic" type="rostopic"
-    args="pub /current_path ros_plane/Current_Path 'false' '10'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[-50.0, -50.0, -40.0]'  '30.0' '1' '-r 5'"/> -->
+<node name="current_path_publisher" pkg="rostopic" type="rostopic"
+    args="pub /current_path ros_plane/Current_Path 'false' '15'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[70.0, -50.0, -60.0]'  '40.0' '1' '-r 5'"/> 
 </launch>
