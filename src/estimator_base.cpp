@@ -67,7 +67,8 @@ void estimator_base::update(const ros::TimerEvent&)
 	{
 	   msg.position[0] = init_lat_ + (output.pn*180.0)/(M_PI*EARTH_RADIUS);
 	   msg.position[1] = init_lon_ + (output.pe*180.0)/(EARTH_RADIUS*M_PI*cos(init_lat_*M_PI/180.0));
-	   msg.position[2] = init_alt_ + output.h;
+	   msg.position[2] = (init_alt_ + output.h)*3.28084; //ft MSL
+       msg.Va = output.Va*1.94384;// KIAS
 
 	   gps_state_pub_.publish(msg);
 	}
