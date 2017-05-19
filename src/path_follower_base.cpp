@@ -35,6 +35,7 @@ void path_follower_base::update(const ros::TimerEvent &)
   msg.chi_c = output.chi_c;
   msg.Va_c = output.Va_c;
   msg.h_c = output.h_c;
+  msg.phi_ff = output.phi_ff;
   controller_commands_pub_.publish(msg);
 }
 
@@ -45,6 +46,7 @@ void path_follower_base::vehicle_state_callback(const fcu_common::StateConstPtr&
   _input.pe = _vehicle_state.position[1];               /** position east */
   _input.h =  -_vehicle_state.position[2];                /** altitude */
   _input.chi = _vehicle_state.chi;
+  _input.Va = _vehicle_state.Va;
 
 }
 
