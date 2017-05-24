@@ -53,6 +53,7 @@ void path_follower::follow(const params_s &params, const input_s &input, output_
         // ROS_WARN_STREAM("Velocity" << input.Va_d << "\nRho_orbit" << input.rho_orbit << "\nFeedForward" << output.phi_ff);
     }
     output.Va_c = input.Va_d;
+    output.land = input.land;
 }
 
 } //end namespace

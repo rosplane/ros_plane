@@ -36,6 +36,7 @@ void path_follower_base::update(const ros::TimerEvent &)
   msg.Va_c = output.Va_c;
   msg.h_c = output.h_c;
   msg.phi_ff = output.phi_ff;
+  msg.land = output.land;
   controller_commands_pub_.publish(msg);
 }
 
@@ -63,6 +64,7 @@ void path_follower_base::current_path_callback(const ros_plane::Current_PathCons
   }
   _input.rho_orbit = _current_path.rho;
   _input.lam_orbit = _current_path.lambda;
+  _input.land = _current_path.land;
 }
 
 void path_follower_base::reconfigure_callback(ros_plane::FollowerConfig &config, uint32_t level)

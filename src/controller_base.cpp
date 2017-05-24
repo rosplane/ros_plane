@@ -130,6 +130,7 @@ void controller_base::actuator_controls_publish(const ros::TimerEvent&)
     input.h_c = _controller_commands.h_c;
     input.chi_c = _controller_commands.chi_c;
     input.phi_ff = _controller_commands.phi_ff;
+    input.land = _controller_commands.land;
     input.Ts = 0.01f;
 
     struct output_s output;

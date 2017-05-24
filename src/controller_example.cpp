@@ -34,6 +34,9 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
+        if(input.land){
+            current_zone = alt_zones::Land;
+        }
         break;
     case alt_zones::Climb:
         output.delta_t = params.max_t;
@@ -51,6 +54,9 @@ void controller_example::control(const params_s &params, const input_s &input, o
 //            ROS_INFO("takeoff");
             current_zone = alt_zones::TakeOff;
         }
+        if(input.land){
+            current_zone = alt_zones::Land;
+        }
         break;
     case alt_zones::Descend:
         output.delta_t = 0;
@@ -65,6 +71,9 @@ void controller_example::control(const params_s &params, const input_s &input, o
             a_error = 0;
             a_integrator = 0;
             a_differentiator = 0;
+        }
+        if(input.land){
+            current_zone = alt_zones::Land;
         }
         break;
     case alt_zones::AltitudeHold:
@@ -83,7 +92,22 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
+        if(input.land){
+            current_zone = alt_zones::Land;
+        }
         break;
+    case alt_zones::Land:
+        output.theta_c = 3.0*3.14/180.0;
+        output.delta_t = 0.15;
+        output.phi_c = 0;
+        output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
+        if(input.h >= params.alt_toz) {
+//            ROS_INFO("climb");
+            current_zone = alt_zones::Climb;
+            ap_error = 0;
+            ap_integrator = 0;
+            ap_differentiator = 0;
+        }
     }
 
     output.current_zone = current_zone;

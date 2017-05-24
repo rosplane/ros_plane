@@ -24,7 +24,8 @@ enum class alt_zones {
     TakeOff,
     Climb,
     Descend,
-    AltitudeHold
+    AltitudeHold,
+    Land
 };
 
 class controller_base
@@ -49,6 +50,7 @@ protected:
         float h_c;              /** commanded altitude (m) */
         float chi_c;            /** commanded course (rad) */
         float phi_ff;           /** feed forward term for orbits (rad) */
+        bool land;
     };
 
     struct output_s{

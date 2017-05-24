@@ -28,6 +28,7 @@ protected:
         float c_orbit[3];
         float rho_orbit;
         int lam_orbit;
+        bool land;              // Flag to land now
         float pn;               /** position north */
         float pe;               /** position east */
         float h;                /** altitude */
@@ -40,6 +41,7 @@ protected:
         double h_c;              /** commanded altitude (m) */
         double chi_c;            /** commanded course (rad) */
         double phi_ff;           /** feed forward term for orbits (rad) */
+        bool land;              // Flag to land now!
     };
 
     struct params_s {

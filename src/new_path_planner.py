@@ -46,6 +46,7 @@ def publishwaypoints():
 
 		new_waypoint.chi_valid = True # True
 		new_waypoint.set_current = False
+		new_waypoint.land = False # True to land now
 		new_waypoint.Va_d = wps[i*5 + 4]
 
 		# Publish the Waypoint

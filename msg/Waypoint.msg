@@ -6,3 +6,5 @@ float32 chi_d		# Desired course at this waypoint (rad)
 bool chi_valid		# Desired course valid
 float32 Va_d		# Desired airspeed (m/s)
 bool set_current	# Sets this waypoint to be executed now!
+bool reset          # True resets waypoint array
+bool land           # True means to land now

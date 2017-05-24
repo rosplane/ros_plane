@@ -94,6 +94,7 @@ class path_manager_base:
 		chi_d = 0.0
 		chi_valid = True
 		Va_d = 0.0
+		land = False
 
 		def __str__(self):
 			return "w: " + str([self.w0,self.w1,self.w2]) + "\nchi_d: " + str(self.chi_d) + "\nchi_valid: " + str(self. chi_valid) + "\nVa_d: " + str(self.Va_d)
@@ -211,6 +212,7 @@ class path_manager_base:
 			self._waypoints[self._num_waypoints].chi_d     = msg.chi_d
 			self._waypoints[self._num_waypoints].chi_valid = msg.chi_valid
 			self._waypoints[self._num_waypoints].Va_d      = msg.Va_d
+			self._waypoints[self._num_waypoints].land	   = msg.land
 			self._num_waypoints+=1
 			print "Number of Waypoints: ", self._num_waypoints
 		if msg.set_current:
@@ -223,6 +225,7 @@ class path_manager_base:
 			new_wp.chi_d = self._vehicle_state.chi
 			new_wp.chi_valid = True
 			new_wp.Va_d = self._vehicle_state.Va
+			new_wp.land = False
 			self._num_waypoints+=1
 			self._waypoints.insert(self.index_a-1, new_wp)
 
@@ -233,6 +236,7 @@ class path_manager_base:
 			new_wp.chi_d = msg.chi_d
 			new_wp.chi_valid = msg.chi_valid
 			new_wp.Va_d = msg.Va_d
+			new_wp.land = msg.land
 			self._num_waypoints+=1
 			self._waypoints.insert(self.index_a, new_wp)
 
@@ -250,6 +254,7 @@ class path_manager_base:
 			current_path.c[i] = output.c[i]
 		current_path.rho = output.rho
 		current_path.lambda_ = output.lambda_
+		current_path.land = self._waypoints[self.index_a].land
 
 		self._current_path_pub.publish(current_path) # publish
 
@@ -261,6 +266,7 @@ class path_manager_base:
 			current_wp.chi_d = self._waypoints[self.index_a].chi_d
 			current_wp.chi_valid = self._waypoints[self.index_a].chi_valid
 			current_wp.Va_d= self._waypoints[self.index_a].Va_d
+			current_wp.land = self._waypoints[self.index_a].land
 			self._current_wp_pub.publish(current_wp) # publish waypoint header toward
 
 	# # Classes in class
