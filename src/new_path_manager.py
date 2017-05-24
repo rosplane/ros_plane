@@ -202,8 +202,36 @@ class path_manager_base:
 
 	def new_waypoint_callback(self, msg):
 		rospy.logwarn('New Waypoint Callback')
+		# RESET Waypoint array
+		if msg.reset:
+			self._waypoints = []
+			self._num_waypoints = 0
+			self.index_a = 1
+
+			new_wp = self.waypoint_temp()
+			self._waypoints.append(new_wp)
+			self._waypoints[self._num_waypoints].w0      = self._vehicle_state.position[0]
+			self._waypoints[self._num_waypoints].w1      = self._vehicle_state.position[1]
+			self._waypoints[self._num_waypoints].w2      = self._vehicle_state.position[2]
+			self._waypoints[self._num_waypoints].chi_d     = self._vehicle_state.chi
+			self._waypoints[self._num_waypoints].chi_valid = True
+			self._waypoints[self._num_waypoints].Va_d      = self._vehicle_state.Va
+			self._waypoints[self._num_waypoints].land	   = False
+			self._num_waypoints+=1
+
+			new_wp = self.waypoint_temp()
+			self._waypoints.append(new_wp)
+			self._waypoints[self._num_waypoints].w0      = msg.w[0]
+			self._waypoints[self._num_waypoints].w1      = msg.w[1]
+			self._waypoints[self._num_waypoints].w2      = msg.w[2]
+			self._waypoints[self._num_waypoints].chi_d     = msg.chi_d
+			self._waypoints[self._num_waypoints].chi_valid = msg.chi_valid
+			self._waypoints[self._num_waypoints].Va_d      = msg.Va_d
+			self._waypoints[self._num_waypoints].land	   = msg.land
+			self._num_waypoints+=1
+
 		# add new waypoint to self._waypoint array or waypoints
-		if msg.set_current == False:
+		elif msg.set_current == False:
 			new_wp = self.waypoint_temp()
 			self._waypoints.append(new_wp)
 			self._waypoints[self._num_waypoints].w0      = msg.w[0]
@@ -215,7 +243,7 @@ class path_manager_base:
 			self._waypoints[self._num_waypoints].land	   = msg.land
 			self._num_waypoints+=1
 			print "Number of Waypoints: ", self._num_waypoints
-		if msg.set_current:
+		elif msg.set_current:
 			self.index_a += 1
 			# Make waypoint at current position
 			new_wp = self.waypoint_temp()
@@ -239,8 +267,6 @@ class path_manager_base:
 			new_wp.land = msg.land
 			self._num_waypoints+=1
 			self._waypoints.insert(self.index_a, new_wp)
-
-
 
 	def current_path_publisher(self, output):
 		# print 'Current Path Publisher'
@@ -291,7 +317,7 @@ class path_manager_base:
 	# functions
 	def manage(self, params, inpt, output):
 		# print 'Manage'
-		if (self._num_waypoints < 3):
+		if (self._num_waypoints < 2):
 			output.flag = True
 			output.Va_d = 9
 			output.r[0] = inpt.pn
@@ -305,7 +331,7 @@ class path_manager_base:
 			output.c[2] = 0.0
 			output.rho = 0
 			output.lambda_ = 0
-			rospy.logwarn('ERROR: less than 3 waypoints!!!')
+			rospy.logwarn('ERROR: less than 2 waypoints!!!')
 		else:
 			# print self.index_a
 			if (self._waypoints[self.index_a].chi_valid) and (self.index_a > 1):
@@ -319,11 +345,12 @@ class path_manager_base:
 				# output = self.manage_dubins(params, inpt, output)
 				output = self.manage_line(params, inpt, output)
 			else:
+				output = self.manage_dubins(params, inpt, output)
 				# print 'Manage -- Line'
 				# output = self.manage_line(params, inpt, output)
 				# print 'Manage -- Fillet'
 				# self.manage_fillet(params,inpt,output)
-				rospy.logwarn('ERROR: MUST RUN DUBINS PATH (set chi_valid to True)')
+				# rospy.logwarn('ERROR: MUST RUN DUBINS PATH (set chi_valid to True)')
 		return output
 
 
@@ -334,7 +361,8 @@ class path_manager_base:
 
 		R_min = params.R_min
 
-		assert (self._num_waypoints >= 3), "insufficient waypoints"
+		if self._num_waypoints < 3:
+			print "Less than 3 waypoints!!"
 
 		now = self._waypoints[self.index_a]
 		past = self.waypoint_temp()
