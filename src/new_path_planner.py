@@ -13,14 +13,14 @@ def publishwaypoints():
 	rospy.init_node('ros_plane_path_planner', anonymous=True)
 
 	# Init Publisher
-	waypointPublisher = rospy.Publisher('/waypoint_path',Waypoint, queue_size=10)
+	waypointPublisher = rospy.Publisher('waypoint_path',Waypoint, queue_size=10)
 
 	# Sleep, (this fixed bug of first waypoint not publishing)
 	d = rospy.Duration(.5)
 	rospy.sleep(d)
 
 	# Set waypoints
-	Va = 30.0#8.5 # 11.0
+	Va = 15.0#8.5 # 11.0
 	wps =  [
 				0, 0, -75, 0.0, Va,
 				750, 0, -75, 0*math.pi/180.0, Va,

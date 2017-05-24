@@ -280,7 +280,10 @@ class path_manager_base:
 			current_path.c[i] = output.c[i]
 		current_path.rho = output.rho
 		current_path.lambda_ = output.lambda_
-		current_path.land = self._waypoints[self.index_a].land
+		if self.index_a > 1:
+			current_path.land = self._waypoints[self.index_a].land
+		else:
+			current_path.land = False
 
 		self._current_path_pub.publish(current_path) # publish
 
@@ -319,7 +322,7 @@ class path_manager_base:
 		# print 'Manage'
 		if (self._num_waypoints < 2):
 			output.flag = True
-			output.Va_d = 9
+			output.Va_d = 15
 			output.r[0] = inpt.pn
 			output.r[1] = inpt.pe
 			output.r[2] = -inpt.h
@@ -343,7 +346,23 @@ class path_manager_base:
 			elif (self._waypoints[self.index_a].chi_valid) and self.start_up:
 				# print 'Manage -- Line'
 				# output = self.manage_dubins(params, inpt, output)
-				output = self.manage_line(params, inpt, output)
+				if (self._num_waypoints < 3):
+					output.flag = True
+					output.Va_d = 15
+					output.r[0] = inpt.pn
+					output.r[1] = inpt.pe
+					output.r[2] = -inpt.h
+					output.q[0] = cos(inpt.chi)
+					output.q[1] = sin(inpt.chi)
+					output.q[2] = 0.0
+					output.c[0] = 0.0
+					output.c[1] = 0.0
+					output.c[2] = 0.0
+					output.rho = 0
+					output.lambda_ = 0
+					rospy.logwarn('ERROR: less than 3 waypoints!!!')
+				else:
+					output = self.manage_line(params, inpt, output)
 			else:
 				output = self.manage_dubins(params, inpt, output)
 				# print 'Manage -- Line'
