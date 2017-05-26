@@ -43,7 +43,7 @@ class path_manager_base:
 
 		# Init Params
 		self.params = self.params_s()
-		self.params.R_min = rospy.get_param('R_min', 200.0)
+		self.params.R_min = rospy.get_param('R_min', 75.0)
 
 		# inititlialize subscribers
 		self._vehicle_state_sub = rospy.Subscriber('truth', State, self.vehicle_state_callback)
@@ -337,7 +337,9 @@ class path_manager_base:
 			rospy.logwarn('ERROR: less than 2 waypoints!!!')
 		else:
 			# print self.index_a
-			if (self._waypoints[self.index_a].chi_valid) and (self.index_a > 1):
+			if self._waypoints[self.index_a].land:
+				output = self.manage_line(params, inpt, output)
+			elif (self._waypoints[self.index_a].chi_valid) and (self.index_a > 1):
 				# print 'Manage -- Dubins'
 				output = self.manage_dubins(params, inpt, output)
 				if self.start_up:
@@ -671,6 +673,8 @@ class path_manager_base:
 			c = self._waypoints[self.index_a + 1]
 		else:
 			a = self._waypoints[self.index_a - 1]
+			print "index a", self.index_a
+			print "num watypoints", len(self._waypoints)
 			c = self._waypoints[self.index_a + 1]
 		# print 'waypoint a'
 		# print a

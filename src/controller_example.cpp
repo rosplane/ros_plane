@@ -34,7 +34,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
-        if(input.land){
+        if(input.land && input.h<=params.alt_toz){
             current_zone = alt_zones::Land;
         }
         break;
@@ -54,7 +54,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
 //            ROS_INFO("takeoff");
             current_zone = alt_zones::TakeOff;
         }
-        if(input.land){
+        if(input.land && input.h<=params.alt_toz){
             current_zone = alt_zones::Land;
         }
         break;
@@ -72,7 +72,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
             a_integrator = 0;
             a_differentiator = 0;
         }
-        if(input.land){
+        if(input.land && input.h<=params.alt_toz){
             current_zone = alt_zones::Land;
         }
         break;
@@ -92,7 +92,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
-        if(input.land){
+        if(input.land && input.h<=params.alt_toz){
             current_zone = alt_zones::Land;
         }
         break;
