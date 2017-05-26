@@ -71,6 +71,7 @@ class path_manager_base:
 		self._dubinspath = Dubin()
 
 		self._waypoints = []
+		self.RTH = False # RETURN TO HOME COMMAND
 
 		# run waypoint init to initialize with waypoints found in waypoint_init (alternative to path_planner.py)
 		# self.waypoint_init()
@@ -128,62 +129,6 @@ class path_manager_base:
 
 
 	# Class Member Functions
-	def waypoint_init(self):
-		# print 'Waypoint Init'
-
-		new_wp = self.waypoint_temp()
-		self._waypoints.append(new_wp)
-		self._waypoints[self._num_waypoints].w0  	 = 0
-		self._waypoints[self._num_waypoints].w1      = 0
-		self._waypoints[self._num_waypoints].w2      = -20
-		self._waypoints[self._num_waypoints].chi_d     = 0.0#-9992
-		self._waypoints[self._num_waypoints].chi_valid = True
-		self._waypoints[self._num_waypoints].Va_d      = 35
-		self._num_waypoints+=1
-
-		new_wp = self.waypoint_temp()
-		self._waypoints.append(new_wp)
-		self._waypoints[self._num_waypoints].w0      = 500
-		self._waypoints[self._num_waypoints].w1      = 0
-		self._waypoints[self._num_waypoints].w2      = -20
-		self._waypoints[self._num_waypoints].chi_d     = 10*np.pi/180.0#-9993
-		self._waypoints[self._num_waypoints].chi_valid = True
-		self._waypoints[self._num_waypoints].Va_d      = 35
-		self._num_waypoints+=1
-
-		new_wp = self.waypoint_temp()
-		self._waypoints.append(new_wp)
-		self._waypoints[self._num_waypoints].w0      = 0
-		self._waypoints[self._num_waypoints].w1      = 500
-		self._waypoints[self._num_waypoints].w2      = -20
-		self._waypoints[self._num_waypoints].chi_d     = -np.pi#-9994
-		self._waypoints[self._num_waypoints].chi_valid = True
-		self._waypoints[self._num_waypoints].Va_d      = 35
-		self._num_waypoints+=1
-
-		new_wp = self.waypoint_temp()
-		self._waypoints.append(new_wp)
-		self._waypoints[self._num_waypoints].w0      = -500
-		self._waypoints[self._num_waypoints].w1      = 0
-		self._waypoints[self._num_waypoints].w2      = -20
-		self._waypoints[self._num_waypoints].chi_d     = -np.pi/2#-9995
-		self._waypoints[self._num_waypoints].chi_valid = True
-		self._waypoints[self._num_waypoints].Va_d      = 35
-		self._num_waypoints+=1
-
-		new_wp = self.waypoint_temp()
-		self._waypoints.append(new_wp)
-		self._waypoints[self._num_waypoints].w0      = 0
-		self._waypoints[self._num_waypoints].w1      = -500
-		self._waypoints[self._num_waypoints].w2      = -20
-		self._waypoints[self._num_waypoints].chi_d     = 0.0#-9996
-		self._waypoints[self._num_waypoints].chi_valid = True
-		self._waypoints[self._num_waypoints].Va_d      = 35
-		self._num_waypoints+=1
-
-		print('Waypoints initialized: ')
-		print 'Number of Waypoints: ' + str(len(self._waypoints))
-
 	def vehicle_state_callback(self, msg):
 		# print 'Vehicle State Callback'
 		self._vehicle_state = msg
@@ -320,58 +265,85 @@ class path_manager_base:
 	# functions
 	def manage(self, params, inpt, output):
 		# print 'Manage'
-		if (self._num_waypoints < 2):
-			output.flag = True
+
+		# Calc distance between waypoints
+		if (self._num_waypoints > 2) and (self.index_a != 0):
+			start = [self._waypoints[self.index_a-1].w0, self._waypoints[self.index_a-1].w1]
+			end = [self._waypoints[self.index_a].w0, self._waypoints[self.index_a].w1]
+			dist = np.linalg.norm(start - end)
+
+		if (self._num_waypoints < 2) or ((self._num_waypoints < 3) and self.start_up) or self.RTH: # If less than 2 waypoints, orbit around home or if less than 3 at takeoff
+			output.flag = False
 			output.Va_d = 15
-			output.r[0] = inpt.pn
-			output.r[1] = inpt.pe
-			output.r[2] = -inpt.h
-			output.q[0] = cos(inpt.chi)
-			output.q[1] = sin(inpt.chi)
-			output.q[2] = 0.0
+			output.r[0] = 999
+			output.r[1] = 999
+			output.r[2] = 999
+			output.q[0] = 999
+			output.q[1] = 999
+			output.q[2] = 999
 			output.c[0] = 0.0
 			output.c[1] = 0.0
-			output.c[2] = 0.0
-			output.rho = 0
-			output.lambda_ = 0
+			output.c[2] = -40
+			output.rho = self.params.R_min
+			output.lambda_ = 1
 			rospy.logwarn('ERROR: less than 2 waypoints!!!')
+		elif self.index_a == 0: # If finished waypoints, orbit around home CHANGE THIS TO AROUND CURRENT POSITION
+			output.flag = False
+			output.Va_d = 15
+			output.r[0] = 999
+			output.r[1] = 999
+			output.r[2] = 999
+			output.q[0] = 999
+			output.q[1] = 999
+			output.q[2] = 999
+			output.c[0] = 0.0
+			output.c[1] = 0.0
+			output.c[2] = -40
+			output.rho = self.params.R_min
+			output.lambda_ = 1
+			rospy.logwarn('Waiting for new waypoints....')
+		elif (self.start_up and self._num_waypoints >= 3) or (self._waypoints[self.index_a].land) or (dist < 2*self.params.R_min):
+			# If good to go at takeoff OR headed to landing point OR Distance between waypoints < 2R
+			output = self.manage_line(params, inpt, output)
 		else:
-			# print self.index_a
-			if self._waypoints[self.index_a].land:
-				output = self.manage_line(params, inpt, output)
-			elif (self._waypoints[self.index_a].chi_valid) and (self.index_a > 1):
-				# print 'Manage -- Dubins'
-				output = self.manage_dubins(params, inpt, output)
-				if self.start_up:
-					self.start_up = False
-				# output = self.manage_line(params, inpt, output)
-			elif (self._waypoints[self.index_a].chi_valid) and self.start_up:
-				# print 'Manage -- Line'
-				# output = self.manage_dubins(params, inpt, output)
-				if (self._num_waypoints < 3):
-					output.flag = True
-					output.Va_d = 15
-					output.r[0] = inpt.pn
-					output.r[1] = inpt.pe
-					output.r[2] = -inpt.h
-					output.q[0] = cos(inpt.chi)
-					output.q[1] = sin(inpt.chi)
-					output.q[2] = 0.0
-					output.c[0] = 0.0
-					output.c[1] = 0.0
-					output.c[2] = 0.0
-					output.rho = 0
-					output.lambda_ = 0
-					rospy.logwarn('ERROR: less than 3 waypoints!!!')
-				else:
-					output = self.manage_line(params, inpt, output)
-			else:
-				output = self.manage_dubins(params, inpt, output)
-				# print 'Manage -- Line'
-				# output = self.manage_line(params, inpt, output)
-				# print 'Manage -- Fillet'
-				# self.manage_fillet(params,inpt,output)
-				# rospy.logwarn('ERROR: MUST RUN DUBINS PATH (set chi_valid to True)')
+			output = self.manage_dubins(params, inpt, output)
+		# else:
+		# 	# print self.index_a
+		# 	if self._waypoints[self.index_a].land:
+		# 		output = self.manage_line(params, inpt, output)
+		# 	elif (self._waypoints[self.index_a].chi_valid) and (self.index_a > 1):
+		# 		# print 'Manage -- Dubins'
+		# 		output = self.manage_dubins(params, inpt, output)
+		# 		if self.start_up:
+		# 			self.start_up = False
+		# 		# output = self.manage_line(params, inpt, output)
+		# 	elif (self._waypoints[self.index_a].chi_valid) and self.start_up:
+		# 		# print 'Manage -- Line'
+		# 		# output = self.manage_dubins(params, inpt, output)
+		# 		if (self._num_waypoints < 3):
+		# 			output.flag = True
+		# 			output.Va_d = 15
+		# 			output.r[0] = inpt.pn
+		# 			output.r[1] = inpt.pe
+		# 			output.r[2] = -inpt.h
+		# 			output.q[0] = cos(inpt.chi)
+		# 			output.q[1] = sin(inpt.chi)
+		# 			output.q[2] = 0.0
+		# 			output.c[0] = 0.0
+		# 			output.c[1] = 0.0
+		# 			output.c[2] = 0.0
+		# 			output.rho = 0
+		# 			output.lambda_ = 0
+		# 			rospy.logwarn('ERROR: less than 3 waypoints!!!')
+		# 		else:
+		# 			output = self.manage_line(params, inpt, output)
+		# 	else:
+		# 		output = self.manage_dubins(params, inpt, output)
+		# 		# print 'Manage -- Line'
+		# 		# output = self.manage_line(params, inpt, output)
+		# 		# print 'Manage -- Fillet'
+		# 		# self.manage_fillet(params,inpt,output)
+		# 		# rospy.logwarn('ERROR: MUST RUN DUBINS PATH (set chi_valid to True)')
 		return output
 
 
@@ -673,8 +645,8 @@ class path_manager_base:
 			c = self._waypoints[self.index_a + 1]
 		else:
 			a = self._waypoints[self.index_a - 1]
-			print "index a", self.index_a
-			print "num watypoints", len(self._waypoints)
+			# print "index a", self.index_a
+			# print "num watypoints", len(self._waypoints)
 			c = self._waypoints[self.index_a + 1]
 		# print 'waypoint a'
 		# print a
@@ -700,11 +672,12 @@ class path_manager_base:
 		output.lambda_ = 1
 
 		n_i = self.normalize(q_im1 + q_i)
-		if (self.dot((p - w_i),n_i) > 0.0):
+		if (self.dot((p - w_i),n_i) > 0.0): # crossed half-plane
 			# Find Waypoint error
 			error = Float32()
 			error = sqrt((p[0]-w_i[0])**2 + (p[1]-w_i[1])**2 + (p[2]-w_i[2])**2)
 			self._wp_error_pub.publish(error)
+			self.start_up = False
 
 			if (self.index_a == (self._num_waypoints - 1)):
 				self.index_a = 0
