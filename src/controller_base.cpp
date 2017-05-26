@@ -171,6 +171,8 @@ void controller_base::actuator_controls_publish(const ros::TimerEvent&)
                 case alt_zones::AltitudeHold:
                     inners.alt_zone = inners.ZONE_ALTITUDE_HOLD;
                     break;
+                case alt_zones::Land:
+                    inners.alt_zone = inners.ZONE_LAND;
             }
             inners.aux_valid = false;
             _internals_pub.publish(inners);

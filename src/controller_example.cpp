@@ -34,7 +34,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
-        if(input.land && input.h<=params.alt_toz){
+        if(input.land){
             current_zone = alt_zones::Land;
         }
         break;
@@ -54,7 +54,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
 //            ROS_INFO("takeoff");
             current_zone = alt_zones::TakeOff;
         }
-        if(input.land && input.h<=params.alt_toz){
+        if(input.land){
             current_zone = alt_zones::Land;
         }
         break;
@@ -72,7 +72,7 @@ void controller_example::control(const params_s &params, const input_s &input, o
             a_integrator = 0;
             a_differentiator = 0;
         }
-        if(input.land && input.h<=params.alt_toz){
+        if(input.land){
             current_zone = alt_zones::Land;
         }
         break;
@@ -92,11 +92,12 @@ void controller_example::control(const params_s &params, const input_s &input, o
             ap_integrator = 0;
             ap_differentiator = 0;
         }
-        if(input.land && input.h<=params.alt_toz){
+        if(input.land){
             current_zone = alt_zones::Land;
         }
         break;
     case alt_zones::Land:
+        ROS_WARN("Landing");
         if (input.h <= 5.0) {
             output.theta_c = 3.0*3.14/180.0;
             output.delta_t = 0.10;
@@ -104,24 +105,24 @@ void controller_example::control(const params_s &params, const input_s &input, o
             output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
         else if (input.h <= 15.0) {
-            output.theta_c = 3.0*3.14/180.0;
-            output.delta_t = airspeed_with_throttle_hold(input.Va_c, input.va, params, input.Ts);
+            output.theta_c = -3.0*3.14/180.0;
+            output.delta_t = airspeed_with_throttle_hold(7.0, input.va, params, input.Ts);
             output.phi_c = 0;
             output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
         else {
-            output.theta_c = 3.0*3.14/180.0;
-            output.delta_t = airspeed_with_throttle_hold(input.Va_c, input.va, params, input.Ts);
-            // output.phi_c = 0;
-            // output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
+            output.theta_c = -3.0*3.14/180.0;
+            output.delta_t = airspeed_with_throttle_hold(10.0, input.va, params, input.Ts);
+            output.phi_c = 0;
+            output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
-        if(input.h >= (params.alt_toz + 5.0)) {
-//            ROS_INFO("climb");
-            current_zone = alt_zones::Climb;
-            ap_error = 0;
-            ap_integrator = 0;
-            ap_differentiator = 0;
-        }
+//         if(input.h >= (params.alt_toz + 5.0)) {
+// //            ROS_INFO("climb");
+//             current_zone = alt_zones::Climb;
+//             ap_error = 0;
+//             ap_integrator = 0;
+//             ap_differentiator = 0;
+//         }
     }
 
     output.current_zone = current_zone;

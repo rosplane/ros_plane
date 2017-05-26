@@ -267,9 +267,9 @@ class path_manager_base:
 		# print 'Manage'
 
 		# Calc distance between waypoints
-		if (self._num_waypoints > 2) and (self.index_a != 0):
-			start = [self._waypoints[self.index_a-1].w0, self._waypoints[self.index_a-1].w1]
-			end = [self._waypoints[self.index_a].w0, self._waypoints[self.index_a].w1]
+		if (self._num_waypoints >= 2):
+			start = np.array([self._waypoints[self.index_a-1].w0, self._waypoints[self.index_a-1].w1])
+			end = np.array([self._waypoints[self.index_a].w0, self._waypoints[self.index_a].w1])
 			dist = np.linalg.norm(start - end)
 
 		if (self._num_waypoints < 2) or ((self._num_waypoints < 3) and self.start_up) or self.RTH: # If less than 2 waypoints, orbit around home or if less than 3 at takeoff
@@ -305,8 +305,10 @@ class path_manager_base:
 		elif (self.start_up and self._num_waypoints >= 3) or (self._waypoints[self.index_a].land) or (dist < 2*self.params.R_min):
 			# If good to go at takeoff OR headed to landing point OR Distance between waypoints < 2R
 			output = self.manage_line(params, inpt, output)
+			print "manage line"
 		else:
 			output = self.manage_dubins(params, inpt, output)
+			print "manage dubins"
 		# else:
 		# 	# print self.index_a
 		# 	if self._waypoints[self.index_a].land:
@@ -645,8 +647,8 @@ class path_manager_base:
 			c = self._waypoints[self.index_a + 1]
 		else:
 			a = self._waypoints[self.index_a - 1]
-			# print "index a", self.index_a
-			# print "num watypoints", len(self._waypoints)
+			print "index a", self.index_a
+			print "num watypoints", len(self._waypoints)
 			c = self._waypoints[self.index_a + 1]
 		# print 'waypoint a'
 		# print a
