@@ -20,7 +20,7 @@ controller_base::controller_base():
     nh_private_.param<double>("PWM_RAD_E", _params.pwm_rad_e, 1.0);
     nh_private_.param<double>("PWM_RAD_A", _params.pwm_rad_a, 1.0);
     nh_private_.param<double>("PWM_RAD_R", _params.pwm_rad_r, 1.0);
-    nh_private_.param<double>("ALT_TOZ", _params.alt_toz, 20.0);
+    nh_private_.param<double>("ALT_TOZ", _params.alt_toz, 30.0);
     nh_private_.param<double>("ALT_HZ", _params.alt_hz, 10.0);
     nh_private_.param<double>("TAU", _params.tau, 5.0);
     nh_private_.param<double>("COURSE_KP", _params.c_kp, 0.7329);
@@ -48,7 +48,7 @@ controller_base::controller_base():
     nh_private_.param<double>("MAX_E", _params.max_e, 0.610);
     nh_private_.param<double>("MAX_A", _params.max_a, 0.523);
     nh_private_.param<double>("MAX_R", _params.max_r, 0.523);
-    nh_private_.param<double>("MAX_T", _params.max_t, 0.7);
+    nh_private_.param<double>("MAX_T", _params.max_t, 1.0);
 
     _func = boost::bind(&controller_base::reconfigure_callback, this, _1, _2);
     _server.setCallback(_func);
