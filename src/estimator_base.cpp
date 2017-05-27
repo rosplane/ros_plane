@@ -102,7 +102,7 @@ void estimator_base::gpsCallback(const fcu_common::GPS &msg)
        msg.data.clear();
        msg.data.push_back(init_lat_);
        msg.data.push_back(init_lon_);
-       msg.data.push_back(init_alt_);
+       msg.data.push_back(6.7056); // 22 ft MSL in meters (competition altitude)
        // msg.data[1] = init_lon_;
        // msg.data[2] = init_alt_;
 
