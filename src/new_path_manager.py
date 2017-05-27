@@ -152,6 +152,7 @@ class path_manager_base:
 			self._waypoints = []
 			self._num_waypoints = 0
 			self.index_a = 1
+			self.state = 1
 
 			new_wp = self.waypoint_temp()
 			self._waypoints.append(new_wp)
@@ -308,7 +309,7 @@ class path_manager_base:
 			print "manage line"
 		else:
 			output = self.manage_dubins(params, inpt, output)
-			print "manage dubins"
+			# print "manage dubins"
 		# else:
 		# 	# print self.index_a
 		# 	if self._waypoints[self.index_a].land:
@@ -396,6 +397,7 @@ class path_manager_base:
 			lam = lam_s
 			if crossed_plane(z1, -q1, pos):
 				self.state = 2
+				print "dubin state 2"
 		if self.state == 2:
 			flag = False
 			c = cs
@@ -404,6 +406,7 @@ class path_manager_base:
 			lam = lam_s
 			if crossed_plane(z1, q1, pos):
 				self.state = 3
+				print "dubin state 3"
 		if self.state == 3:
 			flag = True
 			r = z1
@@ -412,6 +415,7 @@ class path_manager_base:
 			lam = 0
 			if crossed_plane(z2, q1, pos):
 				self.state = 4
+				print "dubin state 4"
 		if self.state == 4:
 			flag = False
 			c = ce
@@ -420,6 +424,7 @@ class path_manager_base:
 			q = np.array([[-999],[-999],[-999]])
 			if crossed_plane(z3, -q3, pos):
 				self.state = 5
+				print "dubin state 5"
 		if self.state == 5:
 			flag = False
 			c = ce
@@ -427,6 +432,7 @@ class path_manager_base:
 			r = np.array([[-999],[-999],[-999]])
 			q = np.array([[-999],[-999],[-999]])
 			if crossed_plane(z3, q3, pos):
+				print "Next Waypoint"
 				# Find Waypoint Error
 				error = Float32()
 				error = sqrt((pos[0]-w_now[0])**2 + (pos[1]-w_now[1])**2 + (pos[2]-w_now[2])**2)
@@ -536,8 +542,13 @@ class path_manager_base:
 			ce = cre
 			lam_e = 1
 			q1 = (ce - cs) / np.linalg.norm(ce - cs)
+			# print "L1"
+			# print q1
+			# print "ce", ce
+			# print "cs", cs
 			z1 = cs + R * np.matmul(self.rotz(-np.pi/2), q1)
 			z2 = ce + R * np.matmul(self.rotz(-np.pi/2), q1)
+			q1 = (z2 - z1) / np.linalg.norm(z2 - z1)
 
 		elif min(lengths) == L2:
 			cs = crs
@@ -548,6 +559,8 @@ class path_manager_base:
 			ang = atan2(ce.item(1) - cs.item(1), ce.item(0) - cs.item(0))
 			ang2 = ang - np.pi/2 + asin((2 * R) / l)
 			q1 = np.matmul(self.rotz(ang2 + np.pi/2), e1)
+			print "L2"
+			print q1
 			z1 = cs + R * np.matmul(self.rotz(ang2), e1)
 			z2 = ce + R * np.matmul(self.rotz(ang2 + np.pi), e1)
 
@@ -560,6 +573,8 @@ class path_manager_base:
 			ang = atan2(ce.item(1) - cs.item(1), ce.item(0) - cs.item(0))
 			ang2 = acos((2 * R) / l)
 			q1 = np.matmul(self.rotz(ang + ang2 - np.pi/2), e1)
+			print "L3"
+			print q1
 			z1 = cs + R * np.matmul(self.rotz(ang + ang2), e1)
 			z2 = ce + R * np.matmul(self.rotz(ang + ang2 -np.pi), e1)
 
@@ -570,6 +585,8 @@ class path_manager_base:
 			ce = cle
 			lam_e = -1
 			q1 = (ce - cs) / np.linalg.norm(ce - cs)
+			print "L4"
+			print q1
 			z1 = cs + R * np.matmul(self.rotz(np.pi/2), q1)
 			z2 = ce + R * np.matmul(self.rotz(np.pi/2), q1)
 
@@ -637,19 +654,19 @@ class path_manager_base:
 
 		b = self._waypoints[self.index_a]
 		a = self.waypoint_temp()
-		c = self.waypoint_temp()
+		# c = self.waypoint_temp()
 
 		if (self.index_a == (self._num_waypoints)):
 			a = self._waypoints[self.index_a-1]
-			c = self._waypoints[0]
+			# c = self._waypoints[0]
 		elif (self.index_a == 0):
 			a = self._waypoints[self._num_waypoints]
-			c = self._waypoints[self.index_a + 1]
+			# c = self._waypoints[self.index_a + 1]
 		else:
 			a = self._waypoints[self.index_a - 1]
-			print "index a", self.index_a
-			print "num watypoints", len(self._waypoints)
-			c = self._waypoints[self.index_a + 1]
+			# print "index a", self.index_a
+			# print "num watypoints", len(self._waypoints)
+			# c = self._waypoints[self.index_a + 1]
 		# print 'waypoint a'
 		# print a
 		# print 'waypoint b'
@@ -659,7 +676,7 @@ class path_manager_base:
 
 		w_im1 = np.array([a.w0,a.w1,a.w2])
 		w_i = np.array([b.w0,b.w1,b.w2])
-		w_ip1 = np.array([c.w0,c.w1,c.w2])
+		# w_ip1 = np.array([c.w0,c.w1,c.w2])
 
 		output.flag = True
 		output.Va_d = a.Va_d
@@ -667,14 +684,14 @@ class path_manager_base:
 
 		q_im1 = self.normalize(w_i - w_im1)
 
-		q_i = self.normalize(w_ip1 - w_i)
+		# q_i = self.normalize(w_ip1 - w_i)
 		output.q = [q_im1[0],q_im1[1],q_im1[2]]
 		output.c = [1, 1, 1]
 		output.rho = 1
 		output.lambda_ = 1
 
-		n_i = self.normalize(q_im1 + q_i)
-		if (self.dot((p - w_i),n_i) > 0.0): # crossed half-plane
+		# n_i = self.normalize(q_im1 + q_i)
+		if (self.dot((p - w_i),q_im1) > 0.0): # crossed half-plane
 			# Find Waypoint error
 			error = Float32()
 			error = sqrt((p[0]-w_i[0])**2 + (p[1]-w_i[1])**2 + (p[2]-w_i[2])**2)
