@@ -7,7 +7,7 @@ import rospy
 from fcu_common.msg import State
 from ros_plane.msg import Waypoint, Current_Path, Dubin
 from sensor_msgs.msg import Imu, FluidPressure
-from std_msgs.msg import Float32, Float32MultiArray
+from std_msgs.msg import Float32, Float32MultiArray, Bool
 from math import *
 import numpy as np
 #import Eigen
@@ -48,6 +48,7 @@ class path_manager_base:
 		# inititlialize subscribers
 		self._vehicle_state_sub = rospy.Subscriber('truth', State, self.vehicle_state_callback)
 		self._new_waypoint_sub = rospy.Subscriber('waypoint_path', Waypoint, self.new_waypoint_callback)
+		self._RTH_sub = rospy.Subscriber('RTH', Bool, self.RTH_callback)
 
 		# Init Publishers
 		self._current_path_pub = rospy.Publisher('current_path', Current_Path, queue_size=10)
@@ -129,6 +130,11 @@ class path_manager_base:
 
 
 	# Class Member Functions
+	def RTH_callback(self, msg):
+		self.RTH = msg.data
+		if self.RTH:
+			rospy.logwarn("RETURN TO HOME!!!!!!!!!!")
+
 	def vehicle_state_callback(self, msg):
 		# print 'Vehicle State Callback'
 		self._vehicle_state = msg
