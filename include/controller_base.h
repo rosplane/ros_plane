@@ -14,6 +14,7 @@
 #include <fcu_common/State.h>
 #include <ros_plane/Controller_Commands.h>
 #include <ros_plane/Controller_Internals.h>
+#include <std_msgs/Bool.h>
 
 #include <dynamic_reconfigure/server.h>
 #include <ros_plane/ControllerConfig.h>
@@ -109,6 +110,7 @@ private:
     ros::NodeHandle nh_private_;
     ros::Subscriber _vehicle_state_sub;
     ros::Subscriber _controller_commands_sub;
+    ros::Subscriber _terminate_flight_sub;
     ros::Publisher _actuators_pub;
     ros::Publisher _internals_pub;
     ros::Timer _act_pub_timer;
@@ -116,9 +118,11 @@ private:
     struct params_s                    _params;            /**< params */
     ros_plane::Controller_Commands _controller_commands;
     fcu_common::State _vehicle_state;
+    std_msgs::Bool _terminate;
 
     void vehicle_state_callback(const fcu_common::StateConstPtr& msg);
     void controller_commands_callback(const ros_plane::Controller_CommandsConstPtr& msg);
+    void terminate_flight_callback(const std_msgs::BoolConstPtr& msg);
     bool _command_recieved;
 
     dynamic_reconfigure::Server<ros_plane::ControllerConfig> _server;
