@@ -46,7 +46,7 @@ class path_manager_base:
 		self.params.R_min = rospy.get_param('R_min', 75.0)
 
 		# inititlialize subscribers
-		self._vehicle_state_sub = rospy.Subscriber('truth', State, self.vehicle_state_callback)
+		self._vehicle_state_sub = rospy.Subscriber('state', State, self.vehicle_state_callback)
 		self._new_waypoint_sub = rospy.Subscriber('waypoint_path', Waypoint, self.new_waypoint_callback)
 		self._RTH_sub = rospy.Subscriber('RTH', Bool, self.RTH_callback)
 
@@ -143,13 +143,10 @@ class path_manager_base:
 		inpt.pe = self._vehicle_state.position[1]
 		inpt.h = -self._vehicle_state.position[2]
 		inpt.chi = self._vehicle_state.chi
-		self.i += 1
 
-		if self.i == 9:
-			outputs = self.output_s()
-			outputs = self.manage(self.params, inpt, outputs) 		# call manager
-			self.current_path_publisher(outputs) 	# publish current_path from outputs
-			self.i = 0
+		outputs = self.output_s()
+		outputs = self.manage(self.params, inpt, outputs) 		# call manager
+		self.current_path_publisher(outputs) 	# publish current_path from outputs
 
 	def new_waypoint_callback(self, msg):
 		rospy.logwarn('New Waypoint Callback')

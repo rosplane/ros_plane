@@ -33,11 +33,13 @@
  
  <node name="path_planner" pkg="ros_plane" type="new_path_planner.py"/>
 
+ <node name="failsafe_checker" pkg="ros_plane" type="failsafe.py" output="screen"/>
+
  <node name="record" pkg="rosbag" type="record" args="--all -o $(arg name)" output="screen"/>
  <!-- GPS -->
 
  <node name="gps_driver" pkg="fcu_common" type="gps">
-	<param name="port" value="/dev/ttyUSB0"/>
+	<param name="port" value="/dev/m8"/>
 	<param name="baud" value="115200"/>
  </node>
 <!-- <node name="current_path_publisher" pkg="rostopic" type="rostopic"

@@ -14,7 +14,7 @@ def publishwaypoints():
 	rospy.init_node('landing_path_planner', anonymous=True)
 
 	# Init Publisher
-	waypointPublisher = rospy.Publisher('/mav0/waypoint_path',Waypoint, queue_size=10)
+	waypointPublisher = rospy.Publisher('waypoint_path',Waypoint, queue_size=10)
 
 	# Sleep, (this fixed bug of first waypoint not publishing)
 	d = rospy.Duration(.5)

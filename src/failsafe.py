@@ -2,6 +2,7 @@
 
 import rospy
 from std_msgs.msg import Bool
+from ros_plane.msg import Status
 
 def failsafe_callback(msg):
 	if msg.failsafe: # If in Failsafe mode

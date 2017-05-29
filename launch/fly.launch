@@ -40,5 +40,5 @@
     args="pub /current_path ros_plane/Current_Path 'true' '15'  '[30.0, 0.0, -50.0]'  '[0.0, -1.0, 0.0]'  '[0.0, 0.0, 0.0]'  '0.0' '1' '-r 5'"/> -->
 
 <node name="current_path_publisher" pkg="rostopic" type="rostopic"
-    args="pub /current_path ros_plane/Current_Path 'false' '15'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[70.0, -50.0, -60.0]'  '40.0' '1' '-r 5'"/> 
+    args="pub /current_path ros_plane/Current_Path 'false' '15'  '[0.0, 0.0, 0.0]'  '[0.0, 0.0, 0.0]'  '[70.0, -50.0, -60.0]'  '40.0' '1' 'false' '-r 5'"/> 
 </launch>
