@@ -154,6 +154,7 @@ void controller_base::actuator_controls_publish(const ros::TimerEvent&)
         actuators.mode = fcu_common::Command::MODE_PASS_THROUGH;
 
         if(_terminate.data == true){
+          ROS_WARN("WARNING TERMINATING FLIGHT");
           actuators.x = _params.max_a;
           actuators.y = _params.max_e;
           actuators.z = _params.max_r;
