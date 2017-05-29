@@ -6,9 +6,11 @@ from ros_plane.msg import Waypoint
 import math
 import sys
 
-num_waypoints = 6
+lp1 = sys.argv[1]
+lp2 = sys.argv[2]
+aa = sys.argv[3]
 
-def publishwaypoints():
+def publishwaypoints(lp1, lp2, aa):
 
 	# Init ROS Node
 	rospy.init_node('landing_path_planner', anonymous=True)
@@ -20,8 +22,8 @@ def publishwaypoints():
 	d = rospy.Duration(.5)
 	rospy.sleep(d)
 
-	land_point = [float(sys.argv[1]), float(sys.argv[2])] # North, East (meters)
-	approach_angle = float(sys.argv[3]) # chi in radians (East of North)
+	land_point = [float(lp1), float(lp2)] # North, East (meters)
+	approach_angle = float(aa) # chi in radians (East of North)
 
 	land = Waypoint()
 
