@@ -47,6 +47,10 @@ Terminate_pub = rospy.Publisher('terminate_flight', Bool, queue_size=10)
 rospy.init_node('Status Watcher')
 r = rospy.Rate(10) # 10hz
 while not rospy.is_shutdown():
-   RTH_pub.publish(RTH)
-   Terminate_pub.publish(Terminate)
-   r.sleep()
+	if RTHNOW:
+		RTH.data = True
+	if TERMINATENOW:
+		Terminate.data = True
+	RTH_pub.publish(RTH)
+	Terminate_pub.publish(Terminate)
+	r.sleep()
