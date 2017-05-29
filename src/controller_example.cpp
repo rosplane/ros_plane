@@ -106,15 +106,15 @@ void controller_example::control(const params_s &params, const input_s &input, o
         }
         else if (input.h <= 15.0) {
             output.theta_c = -5.0*3.14/180.0;
-            output.delta_t = airspeed_with_throttle_hold(7.0, input.va, params, input.Ts);
+            output.delta_t = airspeed_with_throttle_hold(5.0, input.va, params, input.Ts);
             output.phi_c = 0;
             output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
         else {
             output.theta_c = -20.0*3.14/180.0;
-            output.delta_t = airspeed_with_throttle_hold(10.0, input.va, params, input.Ts);
-            output.phi_c = 0;
-            output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
+            output.delta_t = airspeed_with_throttle_hold(7.0, input.va, params, input.Ts);
+            // output.phi_c = 0;
+            // output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
 //         if(input.h >= (params.alt_toz + 5.0)) {
 // //            ROS_INFO("climb");
