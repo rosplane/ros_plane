@@ -287,7 +287,7 @@ class path_manager_base:
 			output.q[2] = 999
 			output.c[0] = 0.0
 			output.c[1] = 0.0
-			output.c[2] = -40
+			output.c[2] = -60
 			output.rho = self.params.R_min
 			output.lambda_ = 1
 			rospy.logwarn('ERROR: less than 2 waypoints!!!')
@@ -302,7 +302,7 @@ class path_manager_base:
 			output.q[2] = 999
 			output.c[0] = 0.0
 			output.c[1] = 0.0
-			output.c[2] = -40
+			output.c[2] = -60
 			output.rho = self.params.R_min
 			output.lambda_ = 1
 			rospy.logwarn('Waiting for new waypoints....')

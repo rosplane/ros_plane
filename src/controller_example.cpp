@@ -116,13 +116,13 @@ void controller_example::control(const params_s &params, const input_s &input, o
             // output.phi_c = 0;
             // output.delta_a = roll_hold(0.0, input.phi, input.p, params, input.Ts);
         }
-//         if(input.h >= (params.alt_toz + 5.0)) {
-// //            ROS_INFO("climb");
-//             current_zone = alt_zones::Climb;
-//             ap_error = 0;
-//             ap_integrator = 0;
-//             ap_differentiator = 0;
-//         }
+        if(input.land != 1) {
+//            ROS_INFO("climb");
+             current_zone = alt_zones::Climb;
+             ap_error = 0;
+             ap_integrator = 0;
+             ap_differentiator = 0;
+         }
     }
 
     output.current_zone = current_zone;

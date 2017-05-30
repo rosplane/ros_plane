@@ -20,7 +20,7 @@
 	<remap from="/airspeed/data" to="/airspeed"/>
  </node>
  
- <rosparam command="load" file="$(find ros_plane)/param/bixler.yaml" ns="controller"/>
+ <rosparam command="load" file="$(find ros_plane)/param/MTD.yaml" ns="controller"/>
  <node name="controller" pkg="ros_plane" type="ros_plane_controller">
     <param name="PWM_RAD_E" value="2.8"/>
 	<param name="PWM_RAD_A" value="-1.6"/>
@@ -29,7 +29,7 @@
 
  <node name="path_follower" pkg="ros_plane" type="ros_plane_path_follower"/>
 
- <node name="path_manager" pkg="ros_plane" type="new_path_manager.py" output="screen"/>
+ <node name="path_manager" pkg="ros_plane" type="new_path_manager.py"/>
  
 <!-- <node name="path_planner" pkg="ros_plane" type="new_path_planner.py"/>-->
 

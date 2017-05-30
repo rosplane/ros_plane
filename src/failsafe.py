@@ -2,7 +2,7 @@
 
 import rospy
 from std_msgs.msg import Bool
-from ros_plane.msg import Status
+from fcu_common.msg import Status
 
 def failsafe_callback(msg):
 	if msg.failsafe: # If in Failsafe mode
@@ -23,7 +23,8 @@ def failsafe_callback(msg):
 		new_failsafe = True
 
 def RTHNOW_callback(msg):
-	RTHNOW = msg.data
+    print"RTH NOW callback"
+    RTHNOW = msg.data
 
 def TERMINATENOW_callback(msg):
 	TERMINATENOW = msg.data
