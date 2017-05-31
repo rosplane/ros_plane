@@ -4,7 +4,7 @@
 # need to make polymorphism
 
 import rospy
-from fcu_common.msg import State
+from rosflight_msgs.msg import State
 from ros_plane.msg import Waypoint, Current_Path, Dubin
 from sensor_msgs.msg import Imu, FluidPressure
 from std_msgs.msg import Float32, Float32MultiArray, Bool

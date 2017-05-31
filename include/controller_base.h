@@ -10,8 +10,8 @@
 #define CONTROLLER_BASE_H
 
 #include <ros/ros.h>
-#include <fcu_common/Command.h>
-#include <fcu_common/State.h>
+#include <rosflight_msgs/Command.h>
+#include <rosflight_msgs/State.h>
 #include <ros_plane/Controller_Commands.h>
 #include <ros_plane/Controller_Internals.h>
 #include <std_msgs/Bool.h>
@@ -117,10 +117,10 @@ private:
 
     struct params_s                    _params;            /**< params */
     ros_plane::Controller_Commands _controller_commands;
-    fcu_common::State _vehicle_state;
+    rosflight_msgs::State _vehicle_state;
     std_msgs::Bool _terminate;
 
-    void vehicle_state_callback(const fcu_common::StateConstPtr& msg);
+    void vehicle_state_callback(const rosflight_msgs::StateConstPtr& msg);
     void controller_commands_callback(const ros_plane::Controller_CommandsConstPtr& msg);
     void terminate_flight_callback(const std_msgs::BoolConstPtr& msg);
     bool _command_recieved;

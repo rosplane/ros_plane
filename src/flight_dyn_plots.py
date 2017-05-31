@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from fcu_common.msg import State
+from rosflight_msgs.msg import State
 from ros_plane.msg import Dubin, Waypoint, Current_Path
 from std_msgs.msg import Float32
 

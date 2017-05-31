@@ -32,7 +32,7 @@
  <node name="record" pkg="rosbag" type="record" args="--all -o $(arg name)" output="screen"/>
  <!-- GPS -->
 
- <node name="gps_driver" pkg="fcu_common" type="gps">
+ <node name="gps_driver" pkg="rosflight_msgs" type="gps">
 	<param name="port" value="/dev/m8"/>
 	<param name="baud" value="115200"/>
  </node>

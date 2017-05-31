@@ -55,14 +55,14 @@ controller_base::controller_base():
     _func = boost::bind(&controller_base::reconfigure_callback, this, _1, _2);
     _server.setCallback(_func);
 
-    _actuators_pub = nh_.advertise<fcu_common::Command>("command",10);
+    _actuators_pub = nh_.advertise<rosflight_msgs::Command>("command",10);
     _internals_pub = nh_.advertise<ros_plane::Controller_Internals>("controller_inners",10);
     _act_pub_timer = nh_.createTimer(ros::Duration(1.0/100.0), &controller_base::actuator_controls_publish, this);
 
     _command_recieved = false;
 }
 
-void controller_base::vehicle_state_callback(const fcu_common::StateConstPtr& msg)
+void controller_base::vehicle_state_callback(const rosflight_msgs::StateConstPtr& msg)
 {
     _vehicle_state = *msg;
 }
@@ -147,11 +147,11 @@ void controller_base::actuator_controls_publish(const ros::TimerEvent&)
 
         convert_to_pwm(output);
 
-        fcu_common::Command actuators;
+        rosflight_msgs::Command actuators;
         /* publish actuator controls */
 
         actuators.ignore = 0;
-        actuators.mode = fcu_common::Command::MODE_PASS_THROUGH;
+        actuators.mode = rosflight_msgs::Command::MODE_PASS_THROUGH;
 
         if(_terminate.data == true){
           ROS_WARN_STREAM("WARNING TERMINATING FLIGHT");
