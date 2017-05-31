@@ -131,7 +131,7 @@ void estimator_example::estimate(const params_s &params, const input_s &input, o
     Eigen::Matrix2f I;
     I = Eigen::Matrix2f::Identity();
 
-    if(((sqrt(powf(lpf_accel_x,2)+powf(lpf_accel_y,2)+powf(lpf_accel_z,2))/9.8066)>2.5) && hhat<5.0){
+    if((lpf_accel_x>2.0) && hhat<5.0){
         ROS_WARN("NOT USING ACCELS!");
     }
     else{

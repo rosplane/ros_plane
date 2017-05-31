@@ -29,7 +29,7 @@
 
  <node name="path_follower" pkg="ros_plane" type="ros_plane_path_follower"/>
 
- <node name="path_manager" pkg="ros_plane" type="new_path_manager.py" output="screen"/>
+ <node name="path_manager" pkg="ros_plane" type="new_path_manager.py"/>
  
  <node name="path_planner" pkg="ros_plane" type="new_path_planner.py"/>
 
